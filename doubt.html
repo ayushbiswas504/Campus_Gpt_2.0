@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doubt Solver Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      animation: slideDown 0.8s ease;
+    }
+
+    #chatbox {
+      width: 80%;
+      height: 420px;
+      margin: 20px auto;
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+      animation: fadeUp 1.2s ease;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 18px;
+      max-width: 70%;
+      word-wrap: break-word;
+      opacity: 0;
+      transform: translateY(15px);
+      animation: messagePop 0.5s forwards;
+    }
+
+    .user {
+      background: #d4fdd6;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+
+    .bot {
+      background: #f0f0f0;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+    }
+
+    .input-area {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    input {
+      width: 60%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    input:focus {
+      transform: scale(1.03);
+      box-shadow: 0px 6px 14px rgba(0,0,0,0.2);
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-left: 10px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+    }
+
+    /* Scrollbar */
+    #chatbox::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #chatbox::-webkit-scrollbar-thumb {
+      background: #aaa;
+      border-radius: 4px;
+    }
+
+    #chatbox::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes messagePop {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🤖 Doubt Solver Chatbot</h1>
+    <p>Ask your questions and get instant answers!</p>
+  </header>
+
+  <main>
+    <div id="chatbox">
+      <div id="messages"></div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your doubt here...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </main>
+
+  <script>
+    const messagesDiv = document.getElementById("messages");
+    const inputField = document.getElementById("userInput");
+
+    // Predefined answers (basic rule-based chatbot)
+    const botResponses = {
+      "hello": "Hi there! How can I help you?",
+      "hi": "Hello! What’s your doubt?",
+      "timetable": "You can check the timetable on the college notice board or website.",
+      "exam": "Exam schedule will be shared by the faculty soon.",
+      "faculty": "Please contact your class teacher for faculty details.",
+      "bye": "Goodbye! Have a nice day 🙂",
+      "default": "I'm not sure about that 🤔. Please ask your teacher."
+    };
+
+    function sendMessage() {
+      const userText = inputField.value.trim();
+      if (userText === "") return;
+
+      // Display user message
+      addMessage(userText, "user");
+
+      // Bot response
+      setTimeout(() => {
+        let reply = botResponses[userText.toLowerCase()] || botResponses["default"];
+        addMessage(reply, "bot");
+      }, 600);
+
+      inputField.value = "";
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.textContent = text;
+      messagesDiv.appendChild(msg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Allow "Enter" key to send message
+    inputField.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

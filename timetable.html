@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Timetable</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #d9a7c7, #fffcdc);
+      color: #333;
+      animation: fadeIn 1s ease-in;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 5px solid rgba(255,255,255,0.2);
+      animation: slideDown 1s ease-in-out;
+    }
+
+    nav button {
+      margin: 5px;
+      padding: 10px 18px;
+      background: white;
+      color: #764ba2;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+    }
+
+    nav button:hover {
+      background: #764ba2;
+      color: white;
+      transform: scale(1.1) rotate(-1deg);
+    }
+
+    main {
+      padding: 20px;
+      animation: fadeUp 1.2s ease-in-out;
+    }
+
+    /* Timetable Sections */
+    .timetable {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .timetable.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      animation: zoomIn 0.8s ease-in-out;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 14px;
+      text-align: center;
+    }
+
+    table th {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 15px;
+    }
+
+    table tr:hover {
+      background: #fcefee;
+      transition: 0.4s ease-in-out;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+      animation: slideUp 1s ease-in-out;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-60px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(60px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✨ College Timetable ✨</h1>
+    <nav>
+      <button onclick="showTimetable('student')">Student Timetable</button>
+      <button onclick="showTimetable('faculty')">Faculty Timetable</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Student Timetable -->
+    <section id="student" class="timetable active">
+      <h2>📘 Student Timetable</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>9:00 - 10:00</th>
+            <th>10:00 - 11:00</th>
+            <th>11:00 - 12:00</th>
+            <th>12:00 - 1:00</th>
+            <th>2:00 - 3:00</th>
+            <th>3:00 - 4:00</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monday</td>
+            <td>Math</td>
+            <td>English</td>
+            <td>Physics</td>
+            <td>Break</td>
+            <td>Computer</td>
+            <td>Lab</td>
+          </tr>
+          <tr>
+            <td>Tuesday</td>
+            <td>Biology</td>
+            <td>Chemistry</td>
+            <td>Math</td>
+            <td>Break</td>
+            <td>Sports</td>
+            <td>English</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Faculty Timetable -->
+    <section id="faculty" class="timetable">
+      <h2>👩‍🏫 Faculty Timetable</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>9:00 - 10:00</th>
+            <th>10:00 - 11:00</th>
+            <th>11:00 - 12:00</th>
+            <th>12:00 - 1:00</th>
+            <th>2:00 - 3:00</th>
+            <th>3:00 - 4:00</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monday</td>
+            <td>Mr. Sharma - Math</td>
+            <td>Ms. Gupta - English</td>
+            <td>Dr. Verma - Physics</td>
+            <td>Break</td>
+            <td>Mr. Khan - CS</td>
+            <td>Lab Supervision</td>
+          </tr>
+          <tr>
+            <td>Tuesday</td>
+            <td>Ms. Singh - Biology</td>
+            <td>Dr. Patel - Chemistry</td>
+            <td>Mr. Sharma - Math</td>
+            <td>Break</td>
+            <td>Sports Duty</td>
+            <td>Ms. Gupta - English</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 College Timetable | Designed with 💜</p>
+  </footer>
+
+  <script>
+    function showTimetable(type) {
+      let timetables = document.querySelectorAll('.timetable');
+      timetables.forEach(table => {
+        table.classList.remove('active');
+      });
+      document.getElementById(type).classList.add('active');
+    }
+  </script>
+</body>
+</html>

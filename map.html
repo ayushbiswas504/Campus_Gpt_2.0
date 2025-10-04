@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Campus Map</title>
+    
+    <style>
+        /* General Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #005a9c;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar for Locations */
+        .sidebar {
+            flex: 0 0 300px; /* Sidebar width, doesn't grow or shrink */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: calc(100vh - 120px); /* Full height minus header and padding */
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-top: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #locationList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #locationList li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        #locationList li:hover {
+            background-color: #eaf2fa;
+        }
+
+        #locationList li.active {
+            background-color: #005a9c;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Map Container */
+        .map-container {
+            flex-grow: 1; /* Takes up the remaining space */
+            position: relative; /* Crucial for positioning markers */
+        }
+
+        #mapImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image covers the area without distortion */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        #markerContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Marker Styling */
+        .marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e63946;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%); /* Centers the marker on its coordinates */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .marker.active {
+            background-color: #1d3557;
+            transform: translate(-50%, -50%) scale(1.4);
+        }
+
+        .marker .marker-label {
+            display: none; /* Initially hidden */
+            position: absolute;
+            bottom: 25px; /* Position above the marker */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-size: 12px;
+        }
+
+        .marker:hover .marker-label {
+            display: block; /* Show label on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Campus Map 🗺</h1>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <input type="search" id="searchInput" placeholder="Search for a building...">
+            <h2>Locations</h2>
+            <ul id="locationList">
+                </ul>
+        </aside>
+
+        <main class="map-container">
+            <img src="https://via.placeholder.com/1200x900.png?text=Your+Campus+Map+Image" alt="Campus Map" id="mapImage">
+            <div id="markerContainer">
+                </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. DEFINE YOUR LOCATIONS HERE ---
+            // Add or remove locations from this array.
+            // 'x' and 'y' are percentage coordinates (0-100) for the marker position on the map.
+            const locations = [
+                { id: 1, name: 'Main Library', x: 25, y: 30 },
+                { id: 2, name: 'Engineering Building', x: 45, y: 22 },
+                { id: 3, name: 'Student Union', x: 50, y: 55 },
+                { id: 4, name: 'Science Labs', x: 38, y: 75 },
+                { id: 5, name: 'Administration Hall', x: 65, y: 40 },
+                { id: 6, name: 'Sports Complex', x: 80, y: 65 },
+                { id: 7, name: 'Arts & Humanities Center', x: 15, y: 50 }
+            ];
+
+            // --- 2. GET REFERENCES TO HTML ELEMENTS ---
+            const locationList = document.getElementById('locationList');
+            const markerContainer = document.getElementById('markerContainer');
+            const searchInput = document.getElementById('searchInput');
+
+            let activeLocationId = null;
+
+            // --- 3. FUNCTIONS ---
+
+            /**
+             * Renders the locations in the sidebar list and as markers on the map.
+             * @param {Array} locationsToRender - The array of location objects to display.
+             */
+            function renderLocations(locationsToRender) {
+                locationList.innerHTML = '';
+                markerContainer.innerHTML = '';
+
+                locationsToRender.forEach(location => {
+                    // Create list item
+                    const listItem = document.createElement('li');
+                    listItem.textContent = location.name;
+                    listItem.dataset.id = location.id;
+                    if (location.id === activeLocationId) {
+                        listItem.classList.add('active');
+                    }
+                    locationList.appendChild(listItem);
+
+                    // Create map marker
+                    const marker = document.createElement('div');
+                    marker.className = 'marker';
+                    marker.style.left = ${location.x}%;
+                    marker.style.top = ${location.y}%;
+                    marker.dataset.id = location.id;
+                    if (location.id === activeLocationId) {
+                        marker.classList.add('active');
+                    }
+
+                    // Add a label that shows on hover
+                    const label = document.createElement('span');
+                    label.className = 'marker-label';
+                    label.textContent = location.name;
+                    marker.appendChild(label);
+                    
+                    markerContainer.appendChild(marker);
+                });
+            }
+
+            /**
+             * Handles clicks on the location list or markers.
+             * @param {Event} e - The click event.
+             */
+            function handleLocationClick(e) {
+                const clickedElement = e.target.closest('[data-id]');
+                if (!clickedElement) return;
+
+                const locationId = parseInt(clickedElement.dataset.id);
+                activeLocationId = locationId;
+
+                // Re-render to update the 'active' state
+                const currentFilter = searchInput.value.toLowerCase();
+                const filteredLocations = locations.filter(loc => loc.name.toLowerCase().includes(currentFilter));
+                renderLocations(filteredLocations);
+            }
+            
+            // --- 4. EVENT LISTENERS ---
+
+            // Initial render of all locations
+            renderLocations(locations);
+
+            // Filter locations when user types in the search bar
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredLocations = locations.filter(location =>
+                    location.name.toLowerCase().includes(searchTerm)
+                );
+                renderLocations(filteredLocations);
+            });
+
+            // Add click listeners to the parents (event delegation)
+            locationList.addEventListener('click', handleLocationClick);
+            markerContainer.addEventListener('click', handleLocationClick);
+        });
+    </script>
+</body>
+</html>

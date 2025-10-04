@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Campus Helper</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="https://unpkg.com/@google/generative-ai"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header>
+        <h1>Campus Gpt</h1>
+        <nav>
+            <ul>
+                <li><a href="timetable.html">Timetable</a></li>
+                <li><a href="exam.html">Exams</a></li>
+                <li><a href="faculty.html">Faculty</a></li>
+                <li><a href="doubt.html">Doubt Solving</a></li>
+                <li><a href="map.html">Campus Map</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="frontend.html">Chatbot 🤖</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="timetable" class="card">
+            <h2>Class Timetable</h2>
+            <p>Your weekly class schedule will be displayed here.</p>
+        </section>
+
+        <section id="exams" class="card">
+            <h2>Exam Schedules</h2>
+            <p>Upcoming exam dates and details will appear here.</p>
+        </section>
+
+        <section id="faculty" class="card">
+            <h2>Faculty Contacts</h2>
+            <p>Contact information for your professors.</p>
+        </section>
+
+        <section id="doubts" class="card">
+            <h2>Doubt Solving 🧠</h2>
+            <p>Upload your course PDF/notes and ask a question.</p>
+            <input type="file" id="pdfUpload">
+            <textarea id="doubtQuestion" placeholder="Type your question here..."></textarea>
+            <button onclick="submitDoubt()">Ask</button>
+        </section>
+        
+        <section id="navigation" class="card">
+            <h2>Campus Navigation</h2>
+            <p>Find your way around campus.</p>
+            <div class="map-placeholder">Campus Map Area</div>
+        </section>
+
+        <section id="events" class="card">
+            <h2>Event Reminders 🔔</h2>
+            <div id="eventList">
+                <p>No upcoming events.</p>
+            </div>
+            <div class="event-form">
+                <input type="text" id="eventName" placeholder="Event Name">
+                <input type="date" id="eventDate">
+                <button onclick="addEvent()">Add Event</button>
+            </div>
+        </section>
+
+        <section id="chatbot" class="card full-width">
+            <h2>Student Chatbot</h2>
+            <div id="chatbox">
+                </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Ask me anything...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; AlogoSphere</p>
+    </footer>
+
+</body>
+</html>
